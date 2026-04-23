@@ -1,5 +1,5 @@
 # Build stage
-FROM node:20-alpine AS builder
+FROM docker.io/node:20-alpine AS builder
 
 # Add build arguments
 ARG CACHEBUST=1
@@ -28,7 +28,8 @@ COPY . .
 RUN npm run build
 
 # Production stage (Alpine 3.23 with OpenSSL 3.5.5, patched libexpat)
-FROM nginx:1.28-alpine
+ENV NGINX_PORT=8080
+FROM docker.io/nginx:1.28-alpine
 
 # Upgrade all packages to fix security vulnerabilities (OpenSSL, libexpat, BusyBox CVEs)
 RUN apk upgrade --no-cache
@@ -53,7 +54,7 @@ RUN chown -R nginx:nginx /usr/share/nginx/html && \
     chown -R nginx:nginx /var/run/nginx.pid
 
 # Expose port
-EXPOSE 80
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \

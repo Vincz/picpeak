@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM docker.io/node:20-alpine AS builder
 
 # Add build arguments
 ARG CACHEBUST=1
@@ -23,7 +23,7 @@ RUN npm ci --omit=dev
 COPY . .
 
 # Production stage
-FROM node:20-alpine
+FROM docker.io/node:20-alpine
 
 WORKDIR /app
 
